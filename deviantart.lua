@@ -161,18 +161,15 @@ allowed = function(url, parenturl)
             and parenturl
             and base == string.match(parenturl, "^https?://([^%?]+)") then
             offset_max = tonumber(offset_max)
-            print('offset_max', offset_max, offset_jump, a, b)
             local offset_i = offset_max
             local count = 0
             while discover_item(discovered_items, "offset:" .. a .. tostring(offset_i) .. b) do
-              print("offset:" .. a .. tostring(offset_i) .. b)
               count = count + 1
               offset_i = offset_i - offset_jump
               if offset_i < 0 then
                 break
               end
             end
-            print('queued', count)
           end
           skip = true
         else
@@ -296,7 +293,6 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
     if not processed(url_)
       and not processed(url_ .. "/")
       and allowed(url_, origurl) then
-print('queued', url_)
       table.insert(urls, {
         url=url_
       })
@@ -675,13 +671,13 @@ wget.callbacks.finish = function(start_time, end_time, wall_time, numurls, total
       end
       count = count + 1
       if count == 100 then
-        --submit_backfeed(items, key)
+        submit_backfeed(items, key)
         items = nil
         count = 0
       end
     end
     if items ~= nil then
-      --submit_backfeed(items, key)
+      submit_backfeed(items, key)
     end
   end
 end
