@@ -86,7 +86,8 @@ find_item = function(url)
     ["^https?://([^/]*deviantart%.net/.+)$"]="asset",
     ["^https?://([^/]*wixmp%.com/.+)$"]="asset",
     ["^https?://([^/]*deviantart%.com/[^/]+/blog.*[%?&]offset=.+)$"]="offset",
-    ["^https?://([^/]*deviantart%.com/[^/]+/favourites/[0-9]+/.+[%?&]offset=.+)$"]="offset"
+    ["^https?://([^/]*deviantart%.com/[^/]+/favourites/[0-9]+/.+[%?&]offset=.+)$"]="offset",
+    ["^https?://([^/]*deviantart%.com/[^/]+/gallery/[0-9]+/.+[%?&]offset=.+)$"]="offset"
   }) do
     value = string.match(url, pattern)
     type_ = name
@@ -129,7 +130,7 @@ allowed = function(url, parenturl)
   
   if string.match(url, "^https?://[^/]*deviantart%.com/comments/")
     or string.match(url, "^https?://[^/]*deviantart%.com/[^/]+/journal/[^/]-%-[0-9]+$")
-    or string.match(url, "^https?://[^/]*deviantart%.com/[^/]+/gallery/.+%?set=[0-9]+$")
+    --or string.match(url, "^https?://[^/]*deviantart%.com/[^/]+/gallery/.+%?set=[0-9]+$")
     or string.match(url, "^https?://[^/]*deviantart%.com/tag/")
     or string.match(url, "[%?&]page=")
     or string.match(url, "[%?&]order=") then
@@ -137,6 +138,7 @@ allowed = function(url, parenturl)
   end
   
   if not string.match(url, "/favourites/")
+    and not string.match(url, "/gallery/")
     and not string.match(url, "https?://[^/]+/[^/]+/[^/]+/[^/]+$")
     and string.match(url, "[%?&]offset=[0-9]+") then
     return false
@@ -147,7 +149,8 @@ allowed = function(url, parenturl)
     ["^https?://([^/]*deviantart%.net/.+)$"]="asset",
     ["^https?://([^/]*wixmp%.com/.+)$"]="asset",
     ["^https?://([^/]*deviantart%.com/[^/]+/blog.*[%?&]offset=.+)$"]="offset",
-    ["^https?://([^/]*deviantart%.com/[^/]+/favourites/[0-9]+/.+[%?&]offset=.+)$"]="offset"
+    ["^https?://([^/]*deviantart%.com/[^/]+/favourites/[0-9]+/.+[%?&]offset=.+)$"]="offset",
+    ["^https?://([^/]*deviantart%.com/[^/]+/gallery/[0-9]+/.+[%?&]offset=.+)$"]="offset"
   }) do
     match = string.match(url, pattern)
     if match then
@@ -671,7 +674,7 @@ wget.callbacks.finish = function(start_time, end_time, wall_time, numurls, total
         items = items .. "\0" .. item
       end
       count = count + 1
-      if count == 100 then
+      if count == 1000 then
         submit_backfeed(items, key)
         items = nil
         count = 0
