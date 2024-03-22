@@ -520,6 +520,7 @@ wget.callbacks.write_to_warc = function(url, http_stat)
     for _, call in pairs(json["DiFi"]["response"]["calls"]) do
       if call["response"]["status"] ~= "SUCCESS" then
         print("One or more calls were unsuccessful.")
+        abort_item()
         retry_url = true
         return false
       end
