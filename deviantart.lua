@@ -420,7 +420,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   end
 
   if allowed(url)
-    and status_code < 300 then
+    and status_code < 300
+    and item_type ~= "asset" then
     html = read_file(file)
     if string.match(url, "^https?://[^/]*deviantart%.com/global/difi") then
       json = cjson.decode(html)
@@ -597,7 +598,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
     io.stdout:write("Server returned bad response. ")
     io.stdout:flush()
     tries = tries + 1
-    local maxtries = 6
+    local maxtries = 8
     if status_code == 404 then
       maxtries = 0
     end
