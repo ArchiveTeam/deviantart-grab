@@ -426,7 +426,11 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
     if string.match(url, "^https?://[^/]*deviantart%.com/global/difi") then
       json = cjson.decode(html)
       local unescaped = urlparse.unescape(url)
-      local innerhtml = get_call(json)["response"]["content"]["html"]
+      local call = get_call(json)
+      if call["response"]["status"] ~= "SUCCESS" then
+        return urls
+      end
+      local innerhtml = call["response"]["content"]["html"]
       if string.match(unescaped, '"GrusersModules","findAndDisplayModule"') then
         local groupname = string.match(innerhtml, 'gmi%-gruser_name="([^"]+)"')
         ids[string.lower(groupname)] = true
@@ -523,9 +527,11 @@ wget.callbacks.write_to_warc = function(url, http_stat)
     end
     for _, call in pairs(json["DiFi"]["response"]["calls"]) do
       if call["response"]["status"] ~= "SUCCESS" then
-        print("One or more calls were unsuccessful.")
-        abort_item()
-        retry_url = true
+        print("One or more calls returned a bad result.")
+        if call["response"]["content"]["error"] ~= "Couldn't find module: joinrequest" then
+          abort_item()
+          retry_url = true
+        end
         return false
       end
     end
