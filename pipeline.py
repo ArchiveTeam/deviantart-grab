@@ -72,7 +72,7 @@ if not WGET_AT:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20240326.01'
+VERSION = '20240326.02'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0'
 TRACKER_ID = 'deviantart'
 TRACKER_HOST = 'legacy-api.arpa.li'
@@ -257,7 +257,6 @@ class WgetArgs(object):
             '--reject-reserved-subnets',
             '--prefer-family', ('IPv4' if 'PREFER_IPV4' in os.environ else 'IPv6'),
             '--content-on-error',
-            '--no-http-keep-alive',
             '--lua-script', 'deviantart.lua',
             '-o', ItemInterpolation('%(item_dir)s/wget.log'),
             '--no-check-certificate',
