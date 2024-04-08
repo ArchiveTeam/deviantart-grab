@@ -528,7 +528,9 @@ wget.callbacks.write_to_warc = function(url, http_stat)
     for _, call in pairs(json["DiFi"]["response"]["calls"]) do
       if call["response"]["status"] ~= "SUCCESS" then
         print("One or more calls returned a bad result.")
-        if call["response"]["content"]["error"] ~= "Couldn't find module: joinrequest" then
+        local error_message = call["response"]["content"]["error"]
+        if error_message ~= "Couldn't find module: joinrequest"
+          and error_message ~= "No such gruser" then
           abort_item()
           retry_url = true
         end
